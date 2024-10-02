@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>百名山・二百名山・三百名山</title>
+    <meta name="description" content="sample" />
+    <link href="style.css" rel="stylesheet" />
+    <!-- MapLibre GL JS -->
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl/dist/maplibre-gl.css" />
+    <script src="https://unpkg.com/maplibre-gl/dist/maplibre-gl.js"></script>
+  </head>
+  <body>
+    <div id="map"></div>
+    <div id="layerControl">
+      <div>
+        <input type="radio" id="blank" name="kind" value="blank" checked />
+        <label for="blank">地理院白地図</label>
+      </div>
+      <div>
+        <input type="radio" id="standard" name="kind" value="standard" />
+        <label for="standard">地理院標準地図</label>
+      </div>
+
+      <div>
+        <input type="button" value="Check" id="checkButton">
+      </div>
+
+      <HR>
+      <div class="checkbox-container">
+        <input type="checkbox" id="meizan" class="checkbox" onchange="changeLayerVisibility(this)" unchecked />
+        <label for="meizan">主要な山頂</label>
+      </div>
+      <div class="checkbox-container">
+        <input type="checkbox" id="road" class="checkbox" onchange="changeLayerVisibility(this)" unchecked />
+        <label for="road">道路</label>
+      </div>
+      <div class="checkbox-container">
+        <input type="checkbox" id="rail" class="checkbox" onchange="changeLayerVisibility(this)" unchecked />
+        <label for="rail">鉄道</label>
+      </div>
+    </div>
+
+
+    <script src="main.js"></script>
+  </body>
+</html>
+
