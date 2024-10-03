@@ -102,6 +102,14 @@ const map = new maplibregl.Map({
   },
 });
 
+// スケール表示
+map.addControl(new maplibregl.ScaleControl({
+    maxWidth: 200,
+    unit: 'metric'
+}));
+// コントロール関係表示
+map.addControl(new maplibregl.NavigationControl());
+
 //ボタンによる地図タイル切り替え
 let kindRadio = document.getElementsByName('kind');
 let len = kindRadio.length;
