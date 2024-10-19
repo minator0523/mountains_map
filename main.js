@@ -1,5 +1,5 @@
 
-
+let hoveredStateID = null;
 const map = new maplibregl.Map({
   container: 'map',
   center: [138.7275, 35.36083333], // 中心座標
@@ -70,15 +70,8 @@ const map = new maplibregl.Map({
             ['==', ['get', 'N02_002'], '5'], '#aa00ff', //purple
             '#000000',
           ],
-          'line-width':[
-            'case',
-            ['==', ['get', 'N02_002'], '1'], 10,
-            ['==', ['get', 'N02_002'], '2'], 7,
-            ['==', ['get', 'N02_002'], '3'], 4,
-            ['==', ['get', 'N02_002'], '4'], 4,
-            ['==', ['get', 'N02_002'], '5'], 4,
-            0,
-          ]
+          'line-width': 5,
+          'line-opacity': 0.8,
         },
         layout: {
           visibility: 'none',
@@ -91,7 +84,8 @@ const map = new maplibregl.Map({
         source: 'highway',
         paint: {
           'line-color': '#84331F',
-          'line-width': 10,
+          'line-width': 5,
+          'line-opacity': 0.8,
         },
         layout: {
           visibility: 'none',
