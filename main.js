@@ -1,5 +1,4 @@
-
-let hoveredStateID = null;
+let hoveredStateId = null;
 const map = new maplibregl.Map({
   container: 'map',
   center: [138.7275, 35.36083333], // 中心座標
@@ -35,7 +34,7 @@ const map = new maplibregl.Map({
       //高速道路
       highway :{
         type: 'geojson',
-        data: './data/N06-23_HighwaySection.geojson'
+        data: './data/highway.geojson'
       },
     },
     // 表示するレイヤ
@@ -83,8 +82,14 @@ const map = new maplibregl.Map({
         type: 'line',
         source: 'highway',
         paint: {
-          'line-color': '#84331F',
-          'line-width': 5,
+          //'line-color': '#ffaa00',
+          'line-color': [
+            'case',
+            ['boolean', ['feature-state', 'hover'], false],
+            '#ffaa00',
+            '#00f',
+          ],
+          'line-width': 5.0,
           'line-opacity': 0.8,
         },
         layout: {
@@ -211,8 +216,40 @@ map.on('click', 'rail', (e) => {
 // 高速道路のラインをクリックしたら，アラートで事業者名と路線名を表示
 // map.on()の２つ目の引数はid
 map.on('click', 'road', (e) => {
-  var name = e.features[0].properties.N06_007;
-  var numberLine = e.features[0].properties.N06_010;
-  popup_str = "路線：" + name + "\n車線数：" + numberLine;
+  var name = e.features[0].properties.路線名;
+  //var numberLine = e.features[0].properties.車線数;
+  popup_str = "路線：" + name;
   alert(popup_str);
+  //console.log(hoveredStateID);
+});
+
+
+map.on('mousemove', 'road', (e) => {
+  var name = e.features[0].properties.路線名;
+  //var numberLine = e.features[0].properties.車線数;
+  //popup_str = "路線：" + name + "\n車線数：" + numberLine;
+  if (e.features.length > 0) {
+    if (hoveredStateId) {
+        map.setFeatureState(
+            {source: 'highway', id: hoveredStateId},
+            {hover: false}
+        );
+    }
+    hoveredStateId = e.features[0].id;
+    map.setFeatureState(
+        {source: 'highway', id: hoveredStateId},
+        {hover: true}
+    );
+    console.log(e.features[0])
+  }
+});
+
+map.on('mouseleave', 'road', () => {
+  if (hoveredStateId) {
+    map.setFeatureState(
+        {source: 'highway', id: hoveredStateId},
+        {hover: false}
+    );
+  }
+  hoveredStateId = null;
 });
