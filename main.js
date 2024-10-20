@@ -82,15 +82,19 @@ const map = new maplibregl.Map({
         type: 'line',
         source: 'highway',
         paint: {
-          //'line-color': '#ffaa00',
-          'line-color': [
+          'line-color': 'blueviolet',
+          'line-width': [
             'case',
             ['boolean', ['feature-state', 'hover'], false],
-            '#ffaa00',
-            '#00f',
+            10.0,
+            5.0,
           ],
-          'line-width': 5.0,
-          'line-opacity': 0.8,
+          'line-opacity': [
+            'case',
+            ['boolean', ['feature-state', 'hover'], false],
+            1.0,
+            0.7,
+          ],
         },
         layout: {
           visibility: 'none',
@@ -225,9 +229,6 @@ map.on('click', 'road', (e) => {
 
 
 map.on('mousemove', 'road', (e) => {
-  var name = e.features[0].properties.路線名;
-  //var numberLine = e.features[0].properties.車線数;
-  //popup_str = "路線：" + name + "\n車線数：" + numberLine;
   if (e.features.length > 0) {
     if (hoveredStateId) {
         map.setFeatureState(
