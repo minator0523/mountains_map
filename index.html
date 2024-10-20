@@ -2,16 +2,12 @@
 <html lang="ja">
   <head>
     <meta charset="utf-8" />
-    <title>百名山・二百名山・三百名山</title>
+    <title>マイマップ</title>
     <meta name="description" content="sample" />
     <link href="style.css" rel="stylesheet" />
     <!-- MapLibre GL JS  -->
-    <link rel='stylesheet' href='https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css' />
-    <script src='https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js'></script>
-    <!--
     <link rel="stylesheet" href="https://unpkg.com/maplibre-gl/dist/maplibre-gl.css" />
     <script src="https://unpkg.com/maplibre-gl/dist/maplibre-gl.js"></script>
-  -->
   </head>
   <body>
     <div id="map"></div>
@@ -32,7 +28,7 @@
       <HR>
       <div class="checkbox-container">
         <input type="checkbox" id="meizan" class="checkbox" onchange="changeLayerVisibility(this)" unchecked />
-        <label for="meizan">主要な山頂</label>
+        <label for="meizan">山頂</label>
       </div>
       <div class="checkbox-container">
         <input type="checkbox" id="road" class="checkbox" onchange="changeLayerVisibility(this)" unchecked />

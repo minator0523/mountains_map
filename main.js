@@ -30,11 +30,13 @@ const map = new maplibregl.Map({
       rail :{
         type: 'geojson',
         data: './data/rail.geojson',
+        attribution: "地図の出典：<a href='https://nlftp.mlit.go.jp/ksj/ksj.html' target='_blank'>国土数値情報鉄道データ</a>",
       },
       //高速道路
       highway :{
         type: 'geojson',
-        data: './data/highway.geojson'
+        data: './data/highway.geojson',
+        attribution: "地図の出典：<a href='https://nlftp.mlit.go.jp/ksj/ksj.html' target='_blank'>国土数値情報高速道路時系列データ</a>",
       },
       /*
       高速道路のセクション
@@ -210,6 +212,7 @@ map.on('load', async () => {
     type: 'symbol',
     source: 'mountain_point',
     layout: {
+      visibility: 'none',
       'icon-image': [
         'case',
         [ '==', ['get', '種別'], '100meizan'], 'mountain_icon_red',
@@ -217,14 +220,7 @@ map.on('load', async () => {
         [ '==', ['get', '種別'], '300meizan'], 'mountain_icon_green',
         'moutain_icon_yellow'
       ],
-      'icon-size': [
-        'case',
-        [ '==', ['get', '種別'], '100meizan'], 0.4,
-        [ '==', ['get', '種別'], '200meizan'], 0.3,
-        [ '==', ['get', '種別'], '300meizan'], 0.3,
-        0.1
-      ],
-        visibility: 'none',
+      'icon-size': 0.3,
     },
   });
 });
@@ -237,22 +233,14 @@ map.on('click', 'meizan', (e) => {
   var yomi = e.features[0].properties.よみがな;
   var altitude = e.features[0].properties.標高;
   var spiece = e.features[0].properties.種別;
- 
-  popup_str = "山名：" + name + "<br>よみがな：" + yomi + "<br>標高：" + altitude + " [m]";
+
+  //popup_str = "山名：" + name + "<br>よみがな：" + yomi + "<br>標高：" + altitude + " [m]";
+  popup_str = "山名：" + name + "\nよみがな：" + yomi + "\n標高：" + altitude + " [m]";
 
   while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
   }
-  // ポップアップを表示する
-  new maplibregl.Popup({
-    offset: 10, // ポップアップの位置
-    closeButton: true,         
-    maxWidth: "1000px",
-    className: 'popup'// 閉じるボタンの表示
-  })
-    .setLngLat(coordinates)
-    .setHTML(popup_str)
-    .addTo(map);
+  alert(popup_str);
 });
 
 
