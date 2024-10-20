@@ -39,10 +39,12 @@ const map = new maplibregl.Map({
         data: './data/highway.geojson',
         attribution: "地図の出典：<a href='https://nlftp.mlit.go.jp/ksj/ksj.html' target='_blank'>国土数値情報高速道路時系列データ</a>",
       },
+      /*
       mountain :{
         type: 'geojson',
         data: './data/meizan.geojson',
       },
+      */
       /*
       高速道路のセクション
       highway_section: {
@@ -218,7 +220,8 @@ function changeLayerVisibility(checkbox) {
   }
 }
 
-// 主要な山頂の表示
+
+// 山頂の表示
 map.on('load', async () => {
   const iconImageRed = await map.loadImage('./img/mountain_red.png');
   const iconImageGreen = await map.loadImage('./img/mountain_green.png');
@@ -244,13 +247,22 @@ map.on('load', async () => {
         [ '==', ['get', '種別'], '300meizan'], 'mountain_icon_green',
         'moutain_icon_yellow'
       ],
-      'icon-size': 0.3,
+      'icon-size': 0.25,
     },
+  });
+});
+
+// 山名の表示
+/*
+map.on('load', async () => {
+  map.addSource('mountain', {
+    type: 'geojson',
+    data: './data/meizan.geojson',
   });
 
   map.addLayer({
-    id: 'school-label-layer', // 学校名を表示するレイヤー
-    source: 'mountain_point',
+    id: 'mon', // 学校名を表示するレイヤー
+    source: 'mountain',
     type: 'symbol', // フォントはsymbolとして表示する
     minzoom: 9,
     layout: {
@@ -258,7 +270,7 @@ map.on('load', async () => {
       'text-font': ['Noto Sans CJK JP Bold'], // glyphsのフォントデータに含まれるフォントを指定
       'text-offset': [0, 1.25], // フォントの位置調整
       'text-anchor': 'top', // フォントの位置調整
-      'text-size': 12.5,
+      'text-size': 15.0,
     },
     paint: {
       'text-halo-width': 1,
@@ -272,6 +284,7 @@ map.on('load', async () => {
     },
   });
 });
+*/
 
 // 山頂のアイコンをクリックした時の挙動
 // map.on()の２つ目の引数はid
