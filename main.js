@@ -4,6 +4,7 @@ const map = new maplibregl.Map({
   center: [138.7275, 35.36083333], // 中心座標
   zoom: 8, // ズームレベル
   style: {
+    glyphs: 'https://maps.gsi.go.jp/xyz/noto-jp/{fontstack}/{range}.pbf',
     // スタイル仕様のバージョン番号。8を指定する
     version: 8,
     // データソース
@@ -37,6 +38,10 @@ const map = new maplibregl.Map({
         type: 'geojson',
         data: './data/highway.geojson',
         attribution: "地図の出典：<a href='https://nlftp.mlit.go.jp/ksj/ksj.html' target='_blank'>国土数値情報高速道路時系列データ</a>",
+      },
+      mountain :{
+        type: 'geojson',
+        data: './data/meizan.geojson',
       },
       /*
       高速道路のセクション
@@ -126,6 +131,25 @@ const map = new maplibregl.Map({
           'line-cap': 'round',
         },
       },
+      /*
+      {
+        id: 'school-label-layer', // 学校名を表示するレイヤー
+        source: 'mountain',
+        type: 'symbol', // フォントはsymbolとして表示する
+        minzoom: 9,
+        layout: {
+          'text-field': ['get', '山名'], // P29_004=学校名
+          'text-font': ['Noto Sans CJK JP Bold'], // glyphsのフォントデータに含まれるフォントを指定
+          'text-offset': [0, 0.5], // フォントの位置調整
+          'text-anchor': 'top', // フォントの位置調整
+          'text-size': 20.0,
+        },
+        paint: {
+          'text-halo-width': 1,
+          'text-halo-color': '#fff',
+        },
+      },
+      */
       /*
       高速道路のセクションデータ
       {
@@ -221,6 +245,30 @@ map.on('load', async () => {
         'moutain_icon_yellow'
       ],
       'icon-size': 0.3,
+    },
+  });
+
+  map.addLayer({
+    id: 'school-label-layer', // 学校名を表示するレイヤー
+    source: 'mountain_point',
+    type: 'symbol', // フォントはsymbolとして表示する
+    minzoom: 9,
+    layout: {
+      'text-field': ['get', '山名'], // P29_004=学校名
+      'text-font': ['Noto Sans CJK JP Bold'], // glyphsのフォントデータに含まれるフォントを指定
+      'text-offset': [0, 1.25], // フォントの位置調整
+      'text-anchor': 'top', // フォントの位置調整
+      'text-size': 12.5,
+    },
+    paint: {
+      'text-halo-width': 1,
+      'text-halo-color': [
+        'case',
+        [ '==', ['get', '種別'], '100meizan'], 'red',
+        [ '==', ['get', '種別'], '200meizan'], 'green',
+        [ '==', ['get', '種別'], '300meizan'], 'green',
+        'black'
+      ],
     },
   });
 });
