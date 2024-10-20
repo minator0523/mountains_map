@@ -1,4 +1,4 @@
-# mountains_map
+# マイマップ
 
 [マイマップ](https://minator0523.github.io/mountains_map/)
 
