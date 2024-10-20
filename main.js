@@ -29,13 +29,20 @@ const map = new maplibregl.Map({
       //鉄道
       rail :{
         type: 'geojson',
-        data: './data/N02-23_RailroadSection.geojson',
+        data: './data/rail.geojson',
       },
       //高速道路
       highway :{
         type: 'geojson',
         data: './data/highway.geojson'
       },
+      /*
+      高速道路のセクション
+      highway_section: {
+        type: 'geojson',
+        data: './data/N06-23_HighwaySection.geojson'
+      }
+      */
     },
     // 表示するレイヤ
     layers: [
@@ -62,15 +69,25 @@ const map = new maplibregl.Map({
         paint: {
           'line-color': [
             'case',
-            ['==', ['get', 'N02_002'], '1'], 'green',
-            ['==', ['get', 'N02_002'], '2'], '#00f', //blue
-            ['==', ['get', 'N02_002'], '3'], '#ff0000', //red
-            ['==', ['get', 'N02_002'], '4'], '#ffaa00', //orange
-            ['==', ['get', 'N02_002'], '5'], '#aa00ff', //purple
+            ['==', ['get', '事業者種別'], '5'], '#aa00ff', //purple
+            ['==', ['get', '事業者種別'], '4'], '#ffaa00', //orange
+            ['==', ['get', '事業者種別'], '3'], '#ff0000', //red
+            ['==', ['get', '事業者種別'], '2'], '#00f', //blue
+            ['==', ['get', '事業者種別'], '1'], 'green',
             '#000000',
           ],
-          'line-width': 5,
-          'line-opacity': 0.8,
+          //'line-width': 5,
+          'line-width': [
+            'case',
+            ['boolean', ['feature-state', 'hover'], false],
+            10.0,
+            5.0,
+          ],
+          'line-opacity': [
+            'case',
+            [ '==', ['get', '事業者種別'], '1'], 1.0,
+            0.75,
+          ],
         },
         layout: {
           visibility: 'none',
@@ -101,6 +118,21 @@ const map = new maplibregl.Map({
           'line-cap': 'round',
         },
       },
+      /*
+      高速道路のセクションデータ
+      {
+        id: 'section',
+        type: 'circle',
+        minzoom: 12,
+        source: 'highway_section',
+        paint: {
+          'circle-color': 'red',
+        },
+        layout: {
+          visibility: 'none',
+        },
+      },
+      */
     ],
   },
 });
@@ -210,8 +242,8 @@ map.on('click', 'meizan', (e) => {
 // 鉄道のラインをクリックしたら，アラートで事業者名と路線名を表示
 // map.on()の２つ目の引数はid
 map.on('click', 'rail', (e) => {
-  var company = e.features[0].properties.N02_004;
-  var name = e.features[0].properties.N02_003;
+  var company = e.features[0].properties.運営会社;
+  var name = e.features[0].properties.路線名;
   popup_str = "事業者名：" + company + "\n路線：" + name;
   alert(popup_str);
 });
@@ -228,6 +260,8 @@ map.on('click', 'road', (e) => {
 });
 
 
+// <<=========================================================>> //
+// 高速道路のhovor効果
 map.on('mousemove', 'road', (e) => {
   if (e.features.length > 0) {
     if (hoveredStateId) {
@@ -241,7 +275,6 @@ map.on('mousemove', 'road', (e) => {
         {source: 'highway', id: hoveredStateId},
         {hover: true}
     );
-    console.log(e.features[0])
   }
 });
 
@@ -254,3 +287,34 @@ map.on('mouseleave', 'road', () => {
   }
   hoveredStateId = null;
 });
+// <<=========================================================>> //
+
+// <<=========================================================>> //
+// 鉄道のhovor効果
+map.on('mousemove', 'rail', (e) => {
+  if (e.features.length > 0) {
+    if (hoveredStateId) {
+        map.setFeatureState(
+            {source: 'rail', id: hoveredStateId},
+            {hover: false}
+        );
+    }
+    hoveredStateId = e.features[0].id;
+    map.setFeatureState(
+        {source: 'rail', id: hoveredStateId},
+        {hover: true}
+    );
+  }
+});
+
+
+map.on('mouseleave', 'rail', () => {
+  if (hoveredStateId) {
+    map.setFeatureState(
+        {source: 'rail', id: hoveredStateId},
+        {hover: false}
+    );
+  }
+  hoveredStateId = null;
+});
+// <<=========================================================>> //
