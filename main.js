@@ -43,6 +43,12 @@ const map = new maplibregl.Map({
         data: './data/N06-23_HighwaySection.geojson'
       }
       */
+     geology: {
+        type: 'raster',
+        tiles: ['https://gbank.gsj.jp/seamless/v2/api/1.2.1/tiles/{z}/{y}/{x}.png?layer=glf'],
+        tileSize: 256,
+        attribution: "地図の出典：<a href='https://gbank.gsj.jp/seamless/' target='_blank'>20万分の1日本シームレス地質図V2（©産総研地質調査総合センター）</a>",
+      },
     },
     // 表示するレイヤ
     layers: [
@@ -133,6 +139,15 @@ const map = new maplibregl.Map({
         },
       },
       */
+      {
+        id: 'geology',
+        type: 'raster',
+        source: 'geology',
+        layout: {
+          visibility: 'none',
+        },
+        paint: {'raster-opacity': 0.5},
+      },  
     ],
   },
 });
@@ -231,7 +246,9 @@ map.on('click', 'meizan', (e) => {
   // ポップアップを表示する
   new maplibregl.Popup({
     offset: 10, // ポップアップの位置
-    closeButton: false, // 閉じるボタンの表示
+    closeButton: true,         
+    maxWidth: "1000px",
+    className: 'popup'// 閉じるボタンの表示
   })
     .setLngLat(coordinates)
     .setHTML(popup_str)
@@ -316,5 +333,48 @@ map.on('mouseleave', 'rail', () => {
     );
   }
   hoveredStateId = null;
+});
+// <<=========================================================>> //
+
+// <<=========================================================>> //
+// クリック地点の地質情報の表示
+map.on('click', function (e) {
+    let element = document.getElementById('geology');
+    result = element.checked;
+    // elementにchackボタンの値を代入
+    // resultはチェック済みならTrue
+
+    if( result ){
+      // シームレス地質図のレイヤー表示時
+      const lat = e.lngLat.lat;
+      const lng = e.lngLat.lng;
+
+      // 経緯度表示
+      var src = 'https://gbank.gsj.jp/seamless/v2/api/1.2.1/legend.json?point=' + lat + ',' + lng;
+      fetch(src)
+      .then((response) => {
+        return response.text();
+      })
+      .then((text) => {
+        var data = JSON.parse(text);
+        var titulo = data.title;
+        var symbol =  data.symbol; //凡例記号（文字列）
+        var age = data.formationAge_ja;
+        var group = data.group_ja; //大区分
+        var rock = data.lithology_ja; //岩相
+
+        popup_str = "年代：" + age + "<br>大区分：" + group + "<br>岩相：" + rock;
+        // ポップアップを表示する
+        new maplibregl.Popup({
+          offset: 10, // ポップアップの位置
+          closeButton: true, // 閉じるボタンの表示
+          maxWidth: "1000px",
+          className: 'popup',
+        })
+        .setLngLat([lng, lat])
+        .setHTML(popup_str)
+        .addTo(map);
+      });
+    }
 });
 // <<=========================================================>> //
