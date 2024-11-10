@@ -27,6 +27,20 @@ const map = new maplibregl.Map({
         tileSize: 256,
         attribution: "地図の出典：<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>国土地理院</a>",
       },
+      // 地理院色別標高図
+      altitude: {
+        type: 'raster',
+        tiles: ['https://cyberjapandata.gsi.go.jp/xyz/relief/{z}/{x}/{y}.png'],
+        tileSize: 256,
+        attribution: "地図の出典：<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>国土地理院</a>",
+      },
+      // 地理院陰影起伏図
+      shade: {
+        type: 'raster',
+        tiles: ['https://cyberjapandata.gsi.go.jp/xyz/hillshademap/{z}/{x}/{y}.png'],
+        tileSize: 256,
+        attribution: "地図の出典：<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>国土地理院</a>",
+      },
       //鉄道
       rail :{
         type: 'geojson',
@@ -73,6 +87,22 @@ const map = new maplibregl.Map({
         id: 'standard-layer',
         type: 'raster',
         source: 'standard',
+        layout: {
+          visibility: 'none',
+        },
+      },
+      {
+        id: 'altitude-layer',
+        type: 'raster',
+        source: 'altitude',
+        layout: {
+          visibility: 'none',
+        },
+      },
+      {
+        id: 'shade-layer',
+        type: 'raster',
+        source: 'shade',
         layout: {
           visibility: 'none',
         },
@@ -186,7 +216,13 @@ map.addControl(new maplibregl.ScaleControl({
     unit: 'metric'
 }));
 // コントロール関係表示
-map.addControl(new maplibregl.NavigationControl());
+map.addControl(
+        new maplibregl.NavigationControl({
+            visualizePitch: true,
+            showZoom: true,
+            showCompass: true
+        })
+    );
 
 //ボタンによる地図タイル切り替え
 let kindRadio = document.getElementsByName('kind');
